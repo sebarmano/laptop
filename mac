@@ -102,6 +102,7 @@ gem_install_or_update() {
   fi
 }
 
+# Install homebrew if not present
 if ! command -v brew >/dev/null; then
   fancy_echo "Installing Homebrew ..."
     /bin/bash -c \
@@ -112,6 +113,7 @@ if ! command -v brew >/dev/null; then
     export PATH="$HOMEBREW_PREFIX/bin:$PATH"
 fi
 
+# Uninstall old brew cask if exists
 if brew list | grep -Fq brew-cask; then
   fancy_echo "Uninstalling old Homebrew-Cask ..."
   brew uninstall --force brew-cask
@@ -136,33 +138,28 @@ brew "vim"
 brew "watchman"
 brew "zsh"
 
-# Heroku
-brew "heroku/brew/heroku"
-brew "parity"
+# Aptible
+brew install--cask aptible
 
 # GitHub
 brew "gh"
 
 # Image manipulation
-brew "imagemagick"
+brew "vips"
 
-# PDF Rendering
+# PDF Rendering - Needed for ActiveStorage
 brew "poppler"
 
 # Programming language prerequisites and package managers
 brew "libyaml" # should come after openssl
 brew "coreutils"
 brew "yarn"
-cask "gpg-suite-no-mail"
+# cask "gpg-suite-no-mail" removing until seeing the need
 
 # Databases
 brew "postgresql@14", restart_service: :changed
 brew "redis", restart_service: :changed
 EOF
-
-fancy_echo "Update heroku binary ..."
-brew unlink heroku
-brew link --force heroku
 
 fancy_echo "Configuring asdf version manager ..."
 if [ ! -d "$HOME/.asdf" ]; then
